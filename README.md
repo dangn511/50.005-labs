@@ -1,4 +1,4 @@
-##Worker revival
+#Worker revival
 
 As the parent goes through the list of task, it loops through all the processes to check if the processes are still alive.
 
@@ -6,7 +6,7 @@ If process is both still alive and done its previously assigned task (`task_stat
 
 If the process is dead (`child_status != 0`), parent call `fork()` to create a new child
 
-##Worker termination
+#Worker termination
 
 Loop through all processes to check
 
