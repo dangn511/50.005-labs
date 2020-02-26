@@ -255,13 +255,13 @@ void cleanup(){
     int is_detached = shmdt((void *) ShmPTR_global_data); 
     int is_removed = shmctl(ShmID_global_data, IPC_RMID, NULL); 
     if (is_detached == -1 || is_removed == -1) {
-        printf("global mem remove fail\n");
+        // printf("global mem remove fail\n");
     }
 
     is_detached = shmdt((void *) shmPTR_jobs_buffer); 
     is_removed = shmctl(ShmID_jobs, IPC_RMID, NULL); 
         if (is_detached == -1 || is_removed == -1) {
-        printf("job mem remove fail\n");
+        // printf("job mem remove fail\n");
     }
 
 
