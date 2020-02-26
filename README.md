@@ -12,4 +12,10 @@ Loop through all processes to check
 
 If a process is already dead, nothing needs to be done.
 
-If a process is still alive, assign it a `z` task so that it exits itself
+If a process is still alive and not doing a task, assign it a `z0` task so that it exits itself
+
+If a process is alive and doing task, do not kill it yet; 
+
+Keep looping until all tasks have been assigned a `z0` task.
+
+
