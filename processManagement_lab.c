@@ -214,19 +214,28 @@ void main_loop(char* fileName) {
 
     // printf("Main process is going to send termination signals\n");
 
-    // terminate all workers
-    // give all of them a z task if they're alive
-    for (int i = 0; i < number_of_processes; i++)
-    {
-        int child_alive = waitpid(children_processes[i], NULL, WNOHANG);
-        if (child_alive == 0)
-        {
-            shmPTR_jobs_buffer[i].task_type = 'z';
-            shmPTR_jobs_buffer[i].task_duration = 0;
-            shmPTR_jobs_buffer[i].task_status = 1;
-            sem_post(sem_jobs_buffer[i]);
+    bool kill_all;
+    do {
+        kill_all = true;
+
+        for (int i = 0; i < number_of_processes; i++) {
+            int status;
+            int task_status = shmPTR_jobs_buffer[i].task_status;
+            int child_status = waitpid(children_processes[i], &status, WNOHANG); // 0 if the child is alive
+
+            if (task_status == 0 && child_status == 0) {
+                //  it's alive, must kill, sned a z task
+                shmPTR_jobs_buffer[i].task_status = 1;
+                shmPTR_jobs_buffer[i].task_duration = 0;
+                shmPTR_jobs_buffer[i].task_type = 'z';
+                sem_post(sem_jobs_buffer[i]);
+            
+            } else if (task_status != 0 && child_status == 0) {
+                // something is still running, cant kill all yet
+                kill_all = false;
+            }
         }
-    }
+    } while (!kill_all);
 
     //wait for all children processes to properly execute the 'z' termination jobs
     int process_waited_final = 0;
